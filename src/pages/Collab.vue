@@ -1,46 +1,47 @@
 <template>
-  <div>
-    <h1 class="text-3xl mb-8">
-      Collaborative Editing with Tiptap Collab
-    </h1>
+  <div class="container mx-auto">
+    <div class="grid gap-8 grid-cols-1 lg:grid-cols-3">
+      <div>
+        <h1 class="text-3xl mb-8">
+          Collaborative Editing with Tiptap Collab
+        </h1>
+    
+        <p class="">Just enter your AppID and secret to get started :-)</p>
+      </div>
 
-    <p class="border p-2">Just enter your AppID and secret to get started :-)</p>
-
-    <div class="my-5">
-      <label
-        for="appId"
-        class="mr-2"
-      >App ID</label>
-
-      <input
-        id="appId"
-        v-model="appId"
-        class="border border-black p-2 my-2"
-      >
-
-      <label
-        for="secret"
-        class="mx-2"
-      >Secret</label>
-
-      <input
-        id="secret"
-        v-model="secret"
-        class="border border-black p-2 my-2 w-1/2"
-      >
+      <div class="lg:col-span-2">
+        <div class="grid gap-8">
+          <div class="grid gap-1">
+            <label for="appId">App ID</label>
+      
+            <input
+              id="appId"
+              type="text"
+              v-model="appId"
+            />
+          </div>
+    
+          <div class="grid gap-2">
+            <label for="secret">Secret</label>
+      
+            <input
+              id="secret"
+              type="text"
+              v-model="secret"
+            />
+          </div>
+        </div>
+      </div>
     </div>
+    
 
-    <div class="grid grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
       <div>
         <StatusBar
           v-if="provider"
           :provider="provider"
           :socket="provider.configuration.websocketProvider"
         />
-  
-        <h2>
-          Editor
-        </h2>
         <div v-if="editor">
           <div class="rounded-xl border-[3px] border-black">
             <editor-content
@@ -56,9 +57,6 @@
           :provider="provider2"
           :socket="provider2.configuration.websocketProvider"
         />
-        <h2>
-          Editor
-        </h2>
         <div v-if="editor2">
           <div class="rounded-xl border-[3px] border-black">
             <editor-content
@@ -94,7 +92,7 @@ const editor2 = shallowRef<Editor>()
 
 watch(secret, () => {
   // do NOT transfer the secret like this in production, this is just for demoing purposes. The secret should be stored on and never leave the server.
-  axios.get(`https://TiptapCollab.janthurau.repl.co:9000/?secret=${secret.value}`).then(data => {
+  axios.get(`https://TiptapCollab.ueberdosis.repl.co:9000/?secret=${secret.value}`).then(data => {
     jwt.value = data.data
   })
 })
@@ -180,8 +178,19 @@ watch([jwt, appId], () => {
   outline: none;
 }
 
-input {
+h2 {
+  @apply text-lg font-semibold;
+}
+
+label {
+  @apply text-sm font-medium;
+}
+
+input[type="text"] {
+  @apply font-mono;
+  @apply border-black border-2;
   @apply rounded-xl;
+  @apply px-3 py-2;
 }
 
   /* Give a remote user a caret */
