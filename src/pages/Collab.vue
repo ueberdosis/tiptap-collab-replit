@@ -1,32 +1,34 @@
 <template>
   <div class="container mx-auto">
-    <div class="grid gap-8 grid-cols-1 lg:grid-cols-3">
+    <div class="grid gap-8 grid-cols-1 lg:grid-cols-2">
       <div>
-        <h1 class="text-3xl mb-8">
+        <h1 class="text-3xl mb-8 font-bold">
           Collaborative Editing with Tiptap Collab
         </h1>
     
-        <p class="">Just enter your AppID and secret to get started :-)</p>
+        <p class="text-gray-700">Just enter your App ID and secret to get started ✨</p>
+
+        <p class="mt-4">
+          <a href="https://tiptap.dev/pricing" class="font-semibold">Need a Tiptap Collab Account? &rarr;</a>
+        </p>
       </div>
 
-      <div class="lg:col-span-2">
-        <div class="grid gap-8">
+      <div>
+        <div class="grid gap-4">
           <div class="grid gap-1">
-            <label for="appId">App ID</label>
-      
             <input
               id="appId"
               type="text"
+              placeholder="App ID"
               v-model="appId"
             />
           </div>
     
           <div class="grid gap-2">
-            <label for="secret">Secret</label>
-      
             <input
               id="secret"
               type="text"
+              placeholder="App Secret"
               v-model="secret"
             />
           </div>
