@@ -77,7 +77,7 @@ import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import { TiptapCollabProvider } from '@hocuspocus/provider'
+import { TiptapCollabProvider, TiptapCollabProviderWebsocket } from '@hocuspocus/provider'
 import axios from 'axios'
 import {
   nextTick, onMounted, ref, shallowRef, watch,
@@ -87,6 +87,7 @@ import StatusBar from '../components/StatusBar.vue'
 const appId = ref('')
 const secret = ref('')
 const jwt = ref('')
+const socket = shallowRef<TiptapCollabProviderWebsocket>()
 const provider = shallowRef<TiptapCollabProvider>()
 const provider2 = shallowRef<TiptapCollabProvider>()
 const editor = shallowRef<Editor>()
@@ -104,6 +105,10 @@ watch(secret, () => {
 onMounted(() => {
   appId.value = window.localStorage.getItem('appId') ?? ''
   secret.value = window.localStorage.getItem('secret') ?? ''
+
+  socket.value = new TiptapCollabProviderWebsocket({
+    appId: appId.value,
+  })
 })
 
 watch([appId, secret], () => {
@@ -119,13 +124,15 @@ watch([jwt, appId], () => {
 
   provider.value = new TiptapCollabProvider({
     appId: appId.value,
+    websocketProvider: socket.value,
     name: 'test1',
     token: jwt.value,
   })
 
   provider2.value = new TiptapCollabProvider({
     appId: appId.value,
-    name: 'test1',
+    websocketProvider: socket.value,
+    name: 'test2',
     token: jwt.value,
   })
 

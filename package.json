@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hocuspocus/provider": "^2.0.1",
+    "@hocuspocus/provider": "^2.0.4",
     "@tiptap/extension-collaboration": "^2.0.1",
     "@tiptap/extension-collaboration-cursor": "^2.0.1",
     "@tiptap/starter-kit": "^2.0.1",
