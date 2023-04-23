@@ -5,7 +5,7 @@
         <h1 class="text-3xl mb-8 font-bold">
           Collaborative Editing with Tiptap Collab
         </h1>
-    
+
         <p class="text-gray-700">Just enter your App ID and secret to get started ✨</p>
 
         <p class="mt-4">
@@ -23,7 +23,7 @@
               v-model="appId"
             />
           </div>
-    
+
           <div class="grid gap-2">
             <input
               id="secret"
@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    
+
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
       <div>
@@ -94,7 +94,9 @@ const editor2 = shallowRef<Editor>()
 
 watch(secret, () => {
   // do NOT transfer the secret like this in production, this is just for demoing purposes. The secret should be stored on and never leave the server.
-  axios.get(`https://TiptapCollab.ueberdosis.repl.co:9000/?secret=${secret.value}`).then(data => {
+  const hostname = !!window.location.hostname.match(/repl/) ? 'https://TiptapCollab.ueberdosis.repl.co:9000' : 'http://127.0.0.1:1234'
+
+  axios.get(`${hostname}/?secret=${secret.value}`).then(data => {
     jwt.value = data.data
   })
 })
