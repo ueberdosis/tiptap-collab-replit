@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../vite.config.ts"],
-  "sourcesContent": ["import { defineConfig } from 'vite'\nimport vue from '@vitejs/plugin-vue'\nimport Pages from 'vite-plugin-pages'\n\n// https://vitejs.dev/config/\nexport default defineConfig({\n  plugins: [vue(), Pages()],\n})\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,kBAA6B;AAC7B,wBAAgB;AAChB,+BAAkB;AAGlB,IAAO,0BAAQ,0BAAa;AAAA,EAC1B,SAAS,KAAC,kBAAAA,SAAI,OAAG,yBAAAC,SAAM,CAAC;AAC1B,CAAC;",
-  "names": ["vue", "Pages"]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../src/main.ts"],
-  "sourcesContent": ["import { createApp } from 'vue'\nimport { createRouter, createWebHistory } from 'vue-router'\n// @ts-ignore\nimport App from './App.vue'\n// @ts-ignore\nimport routes from '~pages'\n\nconst router = createRouter({\n  history: createWebHistory(),\n  routes,\n})\n\ncreateApp(App).use(router).mount('#app')\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;AAAA,iBAA0B;AAC1B,wBAA+C;AAE/C,iBAAgB;AAEhB,mBAAmB;AAEnB,MAAM,aAAS,gCAAa;AAAA,EAC1B,aAAS,oCAAiB;AAAA,EAC1B,qBAAAA;AACF,CAAC;AAAA,IAED,sBAAU,WAAAC,OAAG,EAAE,IAAI,MAAM,EAAE,MAAM,MAAM;",
-  "names": ["routes", "App"]
-}
