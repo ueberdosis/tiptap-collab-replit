@@ -87,7 +87,6 @@ import StatusBar from '../components/StatusBar.vue'
 const appId = ref('')
 const secret = ref('')
 const jwt = ref('')
-const socket = shallowRef<TiptapCollabProviderWebsocket>()
 const provider = shallowRef<TiptapCollabProvider>()
 const provider2 = shallowRef<TiptapCollabProvider>()
 const editor = shallowRef<Editor>()
@@ -105,10 +104,6 @@ watch(secret, () => {
 onMounted(() => {
   appId.value = window.localStorage.getItem('appId') ?? ''
   secret.value = window.localStorage.getItem('secret') ?? ''
-
-  socket.value = new TiptapCollabProviderWebsocket({
-    appId: appId.value,
-  })
 })
 
 watch([appId, secret], () => {
@@ -124,15 +119,13 @@ watch([jwt, appId], () => {
 
   provider.value = new TiptapCollabProvider({
     appId: appId.value,
-    websocketProvider: socket.value,
     name: 'test1',
     token: jwt.value,
   })
 
   provider2.value = new TiptapCollabProvider({
     appId: appId.value,
-    websocketProvider: socket.value,
-    name: 'test2',
+    name: 'test1',
     token: jwt.value,
   })
 
