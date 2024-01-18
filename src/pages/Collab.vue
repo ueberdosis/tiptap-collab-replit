@@ -3,19 +3,29 @@
     <div class="grid gap-8 grid-cols-1 lg:grid-cols-2">
       <div>
         <h1 class="text-3xl mb-8 font-bold">
-          Collaborative Editing with Tiptap Collab
+          Collaborative Editing with Collaboration
         </h1>
 
         <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
         <p class="text-gray-700">The JWT is generated client-side and NEVER leaves your device.</p><br/>
-        <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline">here</a> to open the documentation.</p>
+        <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline">here</a> to open
+          the documentation.</p>
       </div>
 
       <div>
 
-        <p>Current mode: {{mode}}. <span @click="switchMode" class="cursor-pointer underline">Click here to switch to {{alternativeMode}}</span></p><br />
+        <p>Current mode: {{ mode }}. <span @click="switchMode" class="cursor-pointer underline">Click here to switch to {{
+            alternativeMode
+          }}</span>
+        </p><br/>
+        <p>AI: {{ aiEnabled ? 'enabled' : 'disabled' }}. <span @click="aiEnabled = !aiEnabled"
+                                                               class="cursor-pointer underline">Click here to toggle.</span>
+        </p><br/>
 
         <div class="grid gap-4">
+          <hr/>
+
+          <h2>Collaboration settings</h2>
           <div class="grid gap-1" v-if="mode === 'on-premise'">
             <input
               id="appUrl"
@@ -42,7 +52,41 @@
               v-model="secret"
             />
           </div>
+        </div
+        >
+        <div v-if="aiEnabled" class="grid gap-4 mt-4">
+          <hr/>
+
+          <h2>Ai settings</h2>
+
+          <div class="grid gap-1" v-if="mode === 'on-premise'">
+            <input
+              id="appUrl"
+              type="text"
+              placeholder="AI App URL (e.g. http://localhost:8080)"
+              v-model="aiUrl"
+            />
+          </div>
+
+          <div class="grid gap-1" v-if="mode === 'cloud'">
+            <input
+              id="aiId"
+              type="text"
+              placeholder="AI App ID"
+              v-model="aiId"
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <input
+              id="aiSecret"
+              type="text"
+              placeholder="AI Secret"
+              v-model="aiSecret"
+            />
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -93,13 +137,22 @@ import {
 } from 'vue'
 import StatusBar from '../components/StatusBar.vue'
 import * as jose from 'jose'
+import {Ai} from "@tiptap-pro/extension-ai";
 
 const mode = ref<'cloud' | 'on-premise'>('cloud')
 const alternativeMode = ref<'cloud' | 'on-premise'>('on-premise')
+const aiEnabled = ref(true)
+
 const appUrl = ref('')
 const appId = ref('')
 const secret = ref('')
 const jwt = ref('')
+
+const aiUrl = ref('')
+const aiId = ref('')
+const aiSecret = ref('')
+const aiJwt = ref('')
+
 const provider = shallowRef<TiptapCollabProvider>()
 const provider2 = shallowRef<TiptapCollabProvider>()
 const editor = shallowRef<Editor>()
@@ -114,22 +167,34 @@ watch(secret, async () => {
     .sign(new TextEncoder().encode(secret.value))
 })
 
+watch(aiSecret, async () => {
+  // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
+  aiJwt.value = await new jose.SignJWT({}).setProtectedHeader({alg: 'HS256'})
+    .setIssuedAt()
+    .sign(new TextEncoder().encode(aiSecret.value))
+})
+
 onMounted(() => {
   appUrl.value = window.localStorage.getItem('appUrl') ?? ''
   appId.value = window.localStorage.getItem('appId') ?? ''
   mode.value = (window.localStorage.getItem('mode') as typeof mode.value) ?? 'cloud'
   secret.value = window.localStorage.getItem('secret') ?? ''
 
+  aiEnabled.value = window.localStorage.getItem('aiEnabled') === '1'
+  aiUrl.value = window.localStorage.getItem('aiUrl') ?? ''
+  aiId.value = window.localStorage.getItem('aiId') ?? ''
+  aiSecret.value = window.localStorage.getItem('aiSecret') ?? ''
+
   const urlParams = new URLSearchParams(window.location.search);
   const modeParam = urlParams.get('mode')
 
-  if( modeParam && ['cloud', 'on-premise'].includes(modeParam) ) {
+  if (modeParam && ['cloud', 'on-premise'].includes(modeParam)) {
     mode.value = modeParam as typeof mode.value
   }
 })
 
 watch(mode, () => {
-  if( mode.value === 'cloud' ) {
+  if (mode.value === 'cloud') {
     alternativeMode.value = 'on-premise'
   } else {
     alternativeMode.value = 'cloud'
@@ -137,7 +202,7 @@ watch(mode, () => {
 })
 
 const switchMode = () => {
-  if( mode.value === 'cloud' ) {
+  if (mode.value === 'cloud') {
     mode.value = 'on-premise'
   } else {
     mode.value = 'cloud'
@@ -149,9 +214,14 @@ watch([appUrl, secret], () => {
   window.localStorage.setItem('appId', appId.value)
   window.localStorage.setItem('mode', mode.value)
   window.localStorage.setItem('secret', secret.value)
+
+  window.localStorage.setItem('aiEnabled', aiEnabled ? '1' : '0')
+  window.localStorage.setItem('aiUrl', aiUrl.value)
+  window.localStorage.setItem('aiId', aiId.value)
+  window.localStorage.setItem('aiSecret', aiSecret.value)
 })
 
-watch([jwt, appUrl, appId, mode], () => {
+watch([jwt, appUrl, appId, mode, aiUrl, aiJwt], () => {
   if (editor.value) editor.value.destroy()
   if (editor2.value) editor2.value.destroy()
   if (provider.value) provider.value.destroy()
@@ -194,6 +264,13 @@ watch([jwt, appUrl, appId, mode], () => {
             color: '#EADDCA',
           },
         }),
+        ...(aiEnabled.value) ? [
+          Ai.configure({
+            baseUrl: mode.value === 'on-premise' ? aiUrl.value : undefined,
+            appId: mode.value === 'cloud' ? aiId.value : undefined,
+            token: aiJwt.value,
+          })
+        ] : []
       ],
     })
 
@@ -213,6 +290,13 @@ watch([jwt, appUrl, appId, mode], () => {
             color: '#FFA500',
           },
         }),
+        ...(aiEnabled.value) ? [
+          Ai.configure({
+            baseUrl: mode.value === 'on-premise' ? aiUrl.value : undefined,
+            appId: mode.value === 'cloud' ? aiId.value : undefined,
+            token: aiJwt.value,
+          })
+        ] : []
       ],
     })
   })
