@@ -92,52 +92,37 @@
 
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
-      <div>
-        <StatusBar
-          v-if="provider"
-          :provider="provider"
-          :socket="provider.configuration.websocketProvider"
-        />
-        <div v-if="editor">
-          <div class="rounded-xl border-[3px] border-black">
-            <editor-content
-              :editor="editor"
-              class="editor"
-            />
-          </div>
-        </div>
-      </div>
-      <div>
-        <StatusBar
-          v-if="provider2"
-          :provider="provider2"
-          :socket="provider2.configuration.websocketProvider"
-        />
-        <div v-if="editor2">
-          <div class="rounded-xl border-[3px] border-black">
-            <editor-content
-              :editor="editor2"
-              class="editor"
-            />
-          </div>
-        </div>
-      </div>
+      <Editor
+      :mode="mode"
+      :appUrl="appUrl"
+      :appId="appId"
+      :jwt="jwt"
+      :aiEnabled="aiEnabled"
+      :aiUrl="aiUrl"
+      :aiId="aiId"
+      :aiJwt="aiJwt"
+      ></Editor>
+
+      <Editor
+      :mode="mode"
+      :appUrl="appUrl"
+      :appId="appId"
+      :jwt="jwt"
+      :aiEnabled="aiEnabled"
+      :aiUrl="aiUrl"
+      :aiId="aiId"
+      :aiJwt="aiJwt"
+      ></Editor>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {Editor, EditorContent} from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import Collaboration from '@tiptap/extension-collaboration'
-import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import {TiptapCollabProvider} from '@hocuspocus/provider'
+import Editor from '../components/Editor.vue'
 import {
-  nextTick, onMounted, ref, shallowRef, watch,
+  onMounted, ref, watch,
 } from 'vue'
-import StatusBar from '../components/StatusBar.vue'
 import * as jose from 'jose'
-import {Ai} from "@tiptap-pro/extension-ai";
 
 const mode = ref<'cloud' | 'on-premise'>('cloud')
 const alternativeMode = ref<'cloud' | 'on-premise'>('on-premise')
@@ -152,11 +137,6 @@ const aiUrl = ref('')
 const aiId = ref('')
 const aiSecret = ref('')
 const aiJwt = ref('')
-
-const provider = shallowRef<TiptapCollabProvider>()
-const provider2 = shallowRef<TiptapCollabProvider>()
-const editor = shallowRef<Editor>()
-const editor2 = shallowRef<Editor>()
 
 watch(secret, async () => {
   // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
@@ -209,7 +189,7 @@ const switchMode = () => {
   }
 }
 
-watch([appUrl, secret], () => {
+watch([appUrl, appId, mode, secret, aiEnabled, aiUrl, aiId, aiSecret], () => {
   window.localStorage.setItem('appUrl', appUrl.value)
   window.localStorage.setItem('appId', appId.value)
   window.localStorage.setItem('mode', mode.value)
@@ -219,87 +199,6 @@ watch([appUrl, secret], () => {
   window.localStorage.setItem('aiUrl', aiUrl.value)
   window.localStorage.setItem('aiId', aiId.value)
   window.localStorage.setItem('aiSecret', aiSecret.value)
-})
-
-watch([jwt, appUrl, appId, mode, aiUrl, aiJwt], () => {
-  if (editor.value) editor.value.destroy()
-  if (editor2.value) editor2.value.destroy()
-  if (provider.value) provider.value.destroy()
-  if (provider2.value) provider2.value.destroy()
-
-  provider.value = new TiptapCollabProvider({
-    ...(mode.value === 'cloud') ? {
-      appId: appId.value
-    } : {
-      baseUrl: appUrl.value,
-    },
-    name: 'test1',
-    token: jwt.value,
-  })
-
-  provider2.value = new TiptapCollabProvider({
-    ...(mode.value === 'cloud') ? {
-      appId: appId.value
-    } : {
-      baseUrl: appUrl.value,
-    },
-    name: 'test1',
-    token: jwt.value,
-  })
-
-  nextTick(() => {
-    editor.value = new Editor({
-      extensions: [
-        StarterKit.configure({
-          history: false,
-        }),
-        Collaboration.configure({
-          document: provider.value?.document,
-          field: 'default',
-        }),
-        CollaborationCursor.configure({
-          provider: provider.value,
-          user: {
-            name: 'Editor1',
-            color: '#EADDCA',
-          },
-        }),
-        ...(aiEnabled.value) ? [
-          Ai.configure({
-            baseUrl: mode.value === 'on-premise' ? aiUrl.value : undefined,
-            appId: mode.value === 'cloud' ? aiId.value : undefined,
-            token: aiJwt.value,
-          })
-        ] : []
-      ],
-    })
-
-    editor2.value = new Editor({
-      extensions: [
-        StarterKit.configure({
-          history: false,
-        }),
-        Collaboration.configure({
-          document: provider2.value?.document,
-          field: 'default',
-        }),
-        CollaborationCursor.configure({
-          provider: provider2.value,
-          user: {
-            name: 'Editor2',
-            color: '#FFA500',
-          },
-        }),
-        ...(aiEnabled.value) ? [
-          Ai.configure({
-            baseUrl: mode.value === 'on-premise' ? aiUrl.value : undefined,
-            appId: mode.value === 'cloud' ? aiId.value : undefined,
-            token: aiJwt.value,
-          })
-        ] : []
-      ],
-    })
-  })
 })
 
 </script>
