@@ -6,16 +6,25 @@
           Collaborative Editing with Tiptap Collab
         </h1>
 
-        <p class="text-gray-700">Just enter your App ID and secret to get started ✨</p>
-
-        <p class="mt-4">
-          <a href="https://tiptap.dev/pricing" class="font-semibold">Need a Tiptap Collab Account? &rarr;</a>
-        </p>
+        <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
+        <p class="text-gray-700">The JWT is generated client-side and NEVER leaves your device ✨</p>
       </div>
 
       <div>
+
+        <p>Current mode: {{mode}}. <span @click="switchMode" class="cursor-pointer underline">Click here to switch to {{alternativeMode}}</span></p><br />
+
         <div class="grid gap-4">
-          <div class="grid gap-1">
+          <div class="grid gap-1" v-if="mode === 'on-premise'">
+            <input
+              id="appUrl"
+              type="text"
+              placeholder="App URL (ws://localhost:8080)"
+              v-model="appUrl"
+            />
+          </div>
+
+          <div class="grid gap-1" v-if="mode === 'cloud'">
             <input
               id="appId"
               type="text"
@@ -73,17 +82,20 @@
 </template>
 
 <script setup lang="ts">
-import { Editor, EditorContent } from '@tiptap/vue-3'
+import {Editor, EditorContent} from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import { TiptapCollabProvider, TiptapCollabProviderWebsocket } from '@hocuspocus/provider'
-import axios from 'axios'
+import {TiptapCollabProvider} from '@hocuspocus/provider'
 import {
   nextTick, onMounted, ref, shallowRef, watch,
 } from 'vue'
 import StatusBar from '../components/StatusBar.vue'
+import * as jose from 'jose'
 
+const mode = ref<'cloud' | 'on-premise'>('cloud')
+const alternativeMode = ref<'cloud' | 'on-premise'>('on-premise')
+const appUrl = ref('')
 const appId = ref('')
 const secret = ref('')
 const jwt = ref('')
@@ -92,39 +104,74 @@ const provider2 = shallowRef<TiptapCollabProvider>()
 const editor = shallowRef<Editor>()
 const editor2 = shallowRef<Editor>()
 
-watch(secret, () => {
-  // do NOT transfer the secret like this in production, this is just for demoing purposes. The secret should be stored on and never leave the server.
-  const hostname = !!window.location.hostname.match(/repl/) ? 'https://TiptapCollab.ueberdosis.repl.co:9000' : 'http://127.0.0.1:1234'
-
-  axios.get(`${hostname}/?secret=${secret.value}`).then(data => {
-    jwt.value = data.data
-  })
+watch(secret, async () => {
+  // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
+  jwt.value = await new jose.SignJWT({
+    allowedDocumentNames: ['test1', 'test2'],
+  }).setProtectedHeader({alg: 'HS256'})
+    .setIssuedAt()
+    .sign(new TextEncoder().encode(secret.value))
 })
 
 onMounted(() => {
+  appUrl.value = window.localStorage.getItem('appUrl') ?? ''
   appId.value = window.localStorage.getItem('appId') ?? ''
+  mode.value = (window.localStorage.getItem('mode') as typeof mode.value) ?? 'cloud'
   secret.value = window.localStorage.getItem('secret') ?? ''
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const modeParam = urlParams.get('mode')
+
+  if( modeParam && ['cloud', 'on-premise'].includes(modeParam) ) {
+    mode.value = modeParam as typeof mode.value
+  }
 })
 
-watch([appId, secret], () => {
+watch(mode, () => {
+  if( mode.value === 'cloud' ) {
+    alternativeMode.value = 'on-premise'
+  } else {
+    alternativeMode.value = 'cloud'
+  }
+})
+
+const switchMode = () => {
+  if( mode.value === 'cloud' ) {
+    mode.value = 'on-premise'
+  } else {
+    mode.value = 'cloud'
+  }
+}
+
+watch([appUrl, secret], () => {
+  window.localStorage.setItem('appUrl', appUrl.value)
   window.localStorage.setItem('appId', appId.value)
+  window.localStorage.setItem('mode', mode.value)
   window.localStorage.setItem('secret', secret.value)
 })
 
-watch([jwt, appId], () => {
+watch([jwt, appUrl, appId, mode], () => {
   if (editor.value) editor.value.destroy()
   if (editor2.value) editor2.value.destroy()
   if (provider.value) provider.value.destroy()
   if (provider2.value) provider2.value.destroy()
 
   provider.value = new TiptapCollabProvider({
-    appId: appId.value,
+    ...(mode.value === 'cloud') ? {
+      appId: appId.value
+    } : {
+      baseUrl: appUrl.value,
+    },
     name: 'test1',
     token: jwt.value,
   })
 
   provider2.value = new TiptapCollabProvider({
-    appId: appId.value,
+    ...(mode.value === 'cloud') ? {
+      appId: appId.value
+    } : {
+      baseUrl: appUrl.value,
+    },
     name: 'test1',
     token: jwt.value,
   })
@@ -197,7 +244,7 @@ input[type="text"] {
   @apply px-3 py-2;
 }
 
-  /* Give a remote user a caret */
+/* Give a remote user a caret */
 .collaboration-cursor__caret {
   border-left: 1px solid #0D0D0D;
   border-right: 1px solid #0D0D0D;
@@ -207,6 +254,7 @@ input[type="text"] {
   position: relative;
   word-break: normal;
 }
+
 /* Render the username above the caret */
 .collaboration-cursor__label {
   border-radius: 3px 3px 3px 0;
