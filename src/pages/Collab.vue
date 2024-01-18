@@ -7,7 +7,8 @@
         </h1>
 
         <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
-        <p class="text-gray-700">The JWT is generated client-side and NEVER leaves your device ✨</p>
+        <p class="text-gray-700">The JWT is generated client-side and NEVER leaves your device.</p><br/>
+        <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline">here</a> to open the documentation.</p>
       </div>
 
       <div>
@@ -19,7 +20,7 @@
             <input
               id="appUrl"
               type="text"
-              placeholder="App URL (ws://localhost:8080)"
+              placeholder="App URL (e.g. ws://localhost:8080)"
               v-model="appUrl"
             />
           </div>
