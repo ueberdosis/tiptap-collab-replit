@@ -32,7 +32,8 @@
 
 <script setup lang="ts">
 import { ref, defineProps, watch } from 'vue'
-import { HocuspocusProvider, HocuspocusProviderWebsocket } from '@hocuspocus/provider'
+import {HocuspocusProvider, HocuspocusProviderWebsocket, onSyncedParameters} from '@hocuspocus/provider'
+import {onStatusParameters} from "@hocuspocus/provider/src/types";
 
 const status = ref('')
 const synced = ref(false)
@@ -43,11 +44,11 @@ const props = defineProps<{
 }>()
 
 watch(props, () => {
-  props.socket.on('status', event => {
+  props.socket.on('status', (event: onStatusParameters) => {
     status.value = event.status
   })
-  
-  props.provider.on('synced', event => {
+
+  props.provider.on('synced', (event: onSyncedParameters) => {
     synced.value = event.state
   })
 }, {immediate: true})

@@ -148,82 +148,82 @@ onBeforeUnmount(() => {
             </p>
 
             <button
-              @click="() => editor.chain().focus().aiRephrase({ stream: streamMode, modelName: 'gpt-4-1106-preview' }).run()"
+              @click="() => editor?.chain().focus().aiRephrase({ stream: streamMode, modelName: 'gpt-4-1106-preview' }).run()"
               :disabled="isDisabled"
             >
               Rephrase
             </button>
             <button
-              @click="() => editor.chain().focus().aiShorten({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiShorten({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Shorten
             </button>
             <button
-              @click="() => editor.chain().focus().aiExtend({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiExtend({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Extend
             </button>
             <button
-              @click="() => editor.chain().focus().aiSummarize({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiSummarize({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Summarize
             </button>
 
             <button
-              @click="() => editor.chain().focus().aiSimplify({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiSimplify({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Simplify
             </button>
 
             <button
-              @click="() => editor.chain().focus().aiFixSpellingAndGrammar({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiFixSpellingAndGrammar({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Fix spelling
             </button>
             <button
-              @click="() => editor.chain().focus().aiComplete({ append: true, stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiComplete({ append: true, stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Continue writing
             </button>
 
             <button
-              @click="() => editor.chain().focus().aiAdjustTone('excited', { stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiAdjustTone('excited', { stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Use&nbsp;<i>excited</i>&nbsp;tone of voice
             </button>
             <button
-              @click="() => editor.chain().focus().aiEmojify({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiEmojify({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Enrich with 🙂
             </button>
             <button
-              @click="() => editor.chain().focus().aiDeEmojify({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiDeEmojify({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               De-Emojify
             </button>
             <button
-              @click="() => editor.chain().focus().aiTranslate('sv', { stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiTranslate('sv', { stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Translate to&nbsp;<i>Swedish</i>
             </button>
             <button
-              @click="() => editor.chain().focus().aiTranslate('de', { stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiTranslate('de', { stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               Translate to&nbsp;<i>German</i>
             </button>
             <button
-              @click="() => editor.chain().focus().aiTldr({ stream: streamMode }).run()"
+              @click="() => editor?.chain().focus().aiTldr({ stream: streamMode }).run()"
               :disabled="isDisabled"
             >
               tl;dr

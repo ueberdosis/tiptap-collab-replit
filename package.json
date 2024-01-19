@@ -24,6 +24,7 @@
     "yjs": "^13.5.29"
   },
   "devDependencies": {
+    "@types/ws": "^8.5.10",
     "autoprefixer": "^10.4.17",
     "postcss": "8.4.33",
     "tailwindcss": "^3.4.1",
