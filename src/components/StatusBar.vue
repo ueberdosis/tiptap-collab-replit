@@ -32,8 +32,7 @@
 
 <script setup lang="ts">
 import { ref, defineProps, watch } from 'vue'
-import {HocuspocusProvider, HocuspocusProviderWebsocket, onSyncedParameters} from '@hocuspocus/provider'
-import {onStatusParameters} from "@hocuspocus/provider/src/types";
+import type {HocuspocusProvider, HocuspocusProviderWebsocket, onSyncedParameters, onStatusParameters} from '@hocuspocus/provider'
 
 const status = ref('')
 const synced = ref(false)

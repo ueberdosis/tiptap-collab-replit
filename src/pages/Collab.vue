@@ -1,15 +1,21 @@
 <template>
   <div class="container mx-auto">
-    <div class="grid gap-8 grid-cols-1 lg:grid-cols-2">
+    <div class="grid gap-8 grid-cols-1">
       <div>
         <h1 class="text-3xl mb-8 font-bold">
-          Collaborative Editing with Collaboration
+          Tiptap Startup
         </h1>
 
+        <p class="text-gray-700">This startup help offers an interactive testing ground for both collaboration and AI
+          features within the
+          Tiptap environment. Experiment and validate your integrations in a controlled setting.
+
+          Test the functionality of your Collaboration tools alongside the AI features, ensuring a seamless and
+          efficient user experience in your applications.</p>
+
         <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
-        <p class="text-gray-700">The JWT is generated client-side and NEVER leaves your device.</p><br/>
-        <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline">here</a> to open
-          the documentation.</p>
+
+        <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline" target="_blank">here</a> to  open the documentation.</p>
       </div>
 
       <div>
@@ -18,72 +24,274 @@
             alternativeMode
           }}</span>
         </p><br/>
-        <p>AI: {{ aiEnabled ? 'enabled' : 'disabled' }}. <span @click="aiEnabled = !aiEnabled"
-                                                               class="cursor-pointer underline">Click here to toggle.</span>
-        </p><br/>
+
+        <br/>
 
         <div class="grid gap-4">
           <hr/>
 
-          <h2>Collaboration settings</h2>
+          <h2>Test your Collaboration setup</h2>
+
+          <p class="text-gray-700">Verify the functionality of your collaborative editor… in real-time. Simply input
+            your App key and App ID, and you'll gain access to a live playground where you can see your Collaboration
+            setup in action.</p><br/>
+
           <div class="grid gap-1" v-if="mode === 'on-premise'">
-            <input
-              id="appUrl"
-              type="text"
-              placeholder="App URL (e.g. ws://localhost:8080)"
-              v-model="appUrl"
-            />
+            <div>
+              <h3>App URL</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    App URL (e.g. ws://localhost:8080)
+                    Give your app an individual name. This is helpful to distinguish between prod and staging apps.
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="appUrl"
+                                type="text"
+                                class="w-full"
+                                placeholder="ws://"
+                                v-model="appUrl"
+                              />
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="grid gap-1" v-if="mode === 'cloud'">
-            <input
-              id="appId"
-              type="text"
-              placeholder="App ID"
-              v-model="appId"
-            />
+            <div>
+              <h3>App ID</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    App ID
+                    This is the ID shown on collab.tiptap.dev.
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="appId"
+                                type="text"
+                                class="w-full"
+                                placeholder="App ID"
+                                v-model="appId"
+                              />
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="grid gap-2">
-            <input
-              id="secret"
-              type="text"
-              placeholder="App Secret"
-              v-model="secret"
-            />
+          <div class="grid gap-1">
+            <div>
+              <h3>App Secret</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    App Secret
+                    <span v-if="mode==='on-premise'">
+                    (on-premise): the secret is generated on first boot and printed to the console. If you lost it, you can retrieve it from the settings table (key: secret).
+                    </span>
+                    <span v-else>
+                    (cloud): the secret is shown on collab.tiptap.dev.
+                    </span>
+
+                    <span>Our JWT is generated client-side and NEVER leaves your device</span>
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="secret"
+                                type="text"
+                                class="w-full"
+                                placeholder="App Secret"
+                                v-model="secret"
+                              />
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
-        </div
-        >
+
+        </div>
+
+        <div class="mt-5">
+          <h1 class="text-3xl mb-8 font-bold">
+            Test your AI integration
+          </h1>
+
+          <p class="text-gray-700">After setting up your AI environment, you can utilize this section to verify your
+            setup. Test your credentials and server to confirm everything is operating as intended, ensuring your AI
+            server is optimally prepared for both development and deployment.</p><br/>
+          <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
+
+          <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline" target="_blank">here</a> to open the documentation.</p>
+
+          <p>AI: {{ aiEnabled ? 'enabled' : 'disabled' }}. <span @click="aiEnabled = !aiEnabled"
+                                                                 class="cursor-pointer underline">Click here to toggle.</span>
+          </p>
+        </div>
+
         <div v-if="aiEnabled" class="grid gap-4 mt-4">
-          <hr/>
 
           <h2>Ai settings</h2>
 
           <div class="grid gap-1" v-if="mode === 'on-premise'">
-            <input
-              id="appUrl"
-              type="text"
-              placeholder="AI App URL (e.g. http://localhost:8080)"
-              v-model="aiUrl"
-            />
-          </div>
+            <div>
+              <h3>AI URL</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    AI URL (e.g. http://localhost:8080)
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="aiUrl"
+                                type="text"
+                                class="w-full"
+                                placeholder="http://"
+                                v-model="aiUrl"
+                              />
+                            </div>
 
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="grid gap-1" v-if="mode === 'cloud'">
-            <input
-              id="aiId"
-              type="text"
-              placeholder="AI App ID"
-              v-model="aiId"
-            />
+            <div>
+              <h3>AI ID</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    AI ID
+                    This is the AI ID shown on collab.tiptap.dev.
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="appId"
+                                type="text"
+                                class="w-full"
+                                placeholder="App ID"
+                                v-model="aiId"
+                              />
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="grid gap-2">
-            <input
-              id="aiSecret"
-              type="text"
-              placeholder="AI Secret"
-              v-model="aiSecret"
-            />
+
+          <div class="grid gap-1">
+            <div>
+              <h3>AI Secret</h3>
+              <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div class="col-span-1">
+                  <p class="text-sm text-gray-500">
+                    AI Secret
+                    <span v-if="mode==='on-premise'">
+                    (on-premise): the secret needs to be configured in the environment variables (as JWT_SECRET) of the AI server.
+                    </span>
+                    <span v-else>
+                    (cloud): the secret is shown on collab.tiptap.dev.
+                    </span>
+
+                    <span>Our JWT is generated client-side and NEVER leaves your device</span>
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <div class="">
+                      <form>
+                        <div class="flex items-center flex-1 gap-4">
+                          <div x-id="['input']" class="w-full">
+                            <div>
+                              <input
+                                id="secret"
+                                type="text"
+                                class="w-full"
+                                placeholder="AI Secret"
+                                v-model="aiSecret"
+                              />
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -93,25 +301,25 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
       <Editor
-      :mode="mode"
-      :appUrl="appUrl"
-      :appId="appId"
-      :jwt="jwt"
-      :aiEnabled="aiEnabled"
-      :aiUrl="aiUrl"
-      :aiId="aiId"
-      :aiJwt="aiJwt"
+        :mode="mode"
+        :appUrl="appUrl"
+        :appId="appId"
+        :jwt="jwt"
+        :aiEnabled="aiEnabled"
+        :aiUrl="aiUrl"
+        :aiId="aiId"
+        :aiJwt="aiJwt"
       ></Editor>
 
       <Editor
-      :mode="mode"
-      :appUrl="appUrl"
-      :appId="appId"
-      :jwt="jwt"
-      :aiEnabled="aiEnabled"
-      :aiUrl="aiUrl"
-      :aiId="aiId"
-      :aiJwt="aiJwt"
+        :mode="mode"
+        :appUrl="appUrl"
+        :appId="appId"
+        :jwt="jwt"
+        :aiEnabled="aiEnabled"
+        :aiUrl="aiUrl"
+        :aiId="aiId"
+        :aiJwt="aiJwt"
       ></Editor>
     </div>
   </div>
