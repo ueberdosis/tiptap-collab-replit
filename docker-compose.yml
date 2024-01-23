@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      secrets:
+        - npmrc
+    ports:
+      - "80:80"
+
+secrets:
+  npmrc:
+    file: .npmrc
