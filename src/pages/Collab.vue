@@ -156,6 +156,31 @@
 
         </div>
 
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
+          <Editor
+            :mode="mode"
+            :appUrl="appUrl"
+            :appId="appId"
+            :jwt="jwt"
+            :aiEnabled="false"
+            :aiUrl="aiUrl"
+            :aiId="aiId"
+            :aiJwt="aiJwt"
+          ></Editor>
+
+          <Editor
+            :mode="mode"
+            :appUrl="appUrl"
+            :appId="appId"
+            :jwt="jwt"
+            :aiEnabled="false"
+            :aiUrl="aiUrl"
+            :aiId="aiId"
+            :aiJwt="aiJwt"
+          ></Editor>
+        </div>
+
         <div class="mt-5">
           <h1 class="text-3xl mb-8 font-bold">
             Test your AI integration
@@ -167,10 +192,6 @@
           <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
 
           <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline" target="_blank">here</a> to open the documentation.</p>
-
-          <p>AI: {{ aiEnabled ? 'enabled' : 'disabled' }}. <span @click="aiEnabled = !aiEnabled"
-                                                                 class="cursor-pointer underline">Click here to toggle.</span>
-          </p>
         </div>
 
         <div v-if="aiEnabled" class="grid gap-4 mt-4">
@@ -252,7 +273,7 @@
 
           <div class="grid gap-1">
             <div>
-              <h3>AI Secret</h3>
+              <h3>AI Secret (not the demo JWT, the secret)</h3>
               <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div class="col-span-1">
                   <p class="text-sm text-gray-500">
@@ -299,24 +320,13 @@
     </div>
 
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16">
+    <div class="gap-8 mt-16">
       <Editor
         :mode="mode"
         :appUrl="appUrl"
         :appId="appId"
         :jwt="jwt"
-        :aiEnabled="aiEnabled"
-        :aiUrl="aiUrl"
-        :aiId="aiId"
-        :aiJwt="aiJwt"
-      ></Editor>
-
-      <Editor
-        :mode="mode"
-        :appUrl="appUrl"
-        :appId="appId"
-        :jwt="jwt"
-        :aiEnabled="aiEnabled"
+        :aiEnabled="true"
         :aiUrl="aiUrl"
         :aiId="aiId"
         :aiJwt="aiJwt"

@@ -8,6 +8,9 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import {Ai} from "@tiptap-pro/extension-ai";
 import {TiptapCollabProvider} from "@hocuspocus/provider";
 import {onBeforeUnmount, onMounted, ref, shallowRef, watch} from "vue";
+import {
+  runAiTextCommand
+} from "@tiptap-pro/extension-ai/dist/tiptap-pro/packages/extension-ai/src/lib/runAiTextCommand";
 
 const props = defineProps<{
   mode: string
@@ -38,8 +41,9 @@ const recreate = () => {
     } : {
       baseUrl: props.appUrl,
     },
-    name: 'test1',
+    name: props.aiEnabled ? 'ai-test1' : 'test1',
     token: props.jwt,
+    preserveConnection: false
   })
 
   editor.value = new Editor({
