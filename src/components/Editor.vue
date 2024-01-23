@@ -8,9 +8,6 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import {Ai} from "@tiptap-pro/extension-ai";
 import {TiptapCollabProvider} from "@hocuspocus/provider";
 import {onBeforeUnmount, onMounted, ref, shallowRef, watch} from "vue";
-import {
-  runAiTextCommand
-} from "@tiptap-pro/extension-ai/dist/tiptap-pro/packages/extension-ai/src/lib/runAiTextCommand";
 
 const props = defineProps<{
   mode: string
@@ -41,9 +38,18 @@ const recreate = () => {
     } : {
       baseUrl: props.appUrl,
     },
-    name: props.aiEnabled ? 'ai-test1' : 'test1',
+    name: props.aiEnabled ? 'ai-test1' : 'test2',
     token: props.jwt,
-    preserveConnection: false
+    preserveConnection: false,
+    onSynced(data) {
+      const placeholder = 'Hi 👋, this is a collaborative document.<br />Feel free to Edit, comment, and collaborate in real-time!'
+
+      setTimeout(() => {
+        if( editor.value?.getText() === '' ) {
+          editor.value!.commands.setContent(placeholder)
+        }
+      }, 350)
+    },
   })
 
   editor.value = new Editor({

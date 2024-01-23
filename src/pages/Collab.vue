@@ -28,9 +28,9 @@
         <br/>
 
         <div class="grid gap-4">
-          <hr/>
-
-          <h2>Test your Collaboration setup</h2>
+          <h2 class="text-2xl mt-48 mb-8 font-bold">
+            Test your Collaboration setup
+          </h2>
 
           <p class="text-gray-700">Verify the functionality of your collaborative editor… in real-time. Simply input
             your App key and App ID, and you'll gain access to a live playground where you can see your Collaboration
@@ -182,9 +182,10 @@
         </div>
 
         <div class="mt-5">
-          <h1 class="text-3xl mb-8 font-bold">
+          <h2 class="text-2xl mb-8 font-bold mt-48">
             Test your AI integration
-          </h1>
+          </h2>
+
 
           <p class="text-gray-700">After setting up your AI environment, you can utilize this section to verify your
             setup. Test your credentials and server to confirm everything is operating as intended, ensuring your AI
