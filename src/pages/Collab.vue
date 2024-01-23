@@ -197,8 +197,6 @@
 
         <div v-if="aiEnabled" class="grid gap-4 mt-4">
 
-          <h2>Ai settings</h2>
-
           <div class="grid gap-1" v-if="mode === 'on-premise'">
             <div>
               <h3>AI URL</h3>
