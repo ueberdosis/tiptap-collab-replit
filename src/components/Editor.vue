@@ -38,7 +38,7 @@ const recreate = () => {
     } : {
       baseUrl: props.appUrl,
     },
-    name: props.aiEnabled ? 'ai-test1' : 'test2',
+    name: props.aiEnabled ? 'ai-test1' : 'testdocument',
     token: props.jwt,
     preserveConnection: false,
     onSynced(data) {
@@ -48,7 +48,7 @@ const recreate = () => {
         if( editor.value?.getText() === '' ) {
           editor.value!.commands.setContent(placeholder)
         }
-      }, 350)
+      }, 1000 * Math.random())
     },
   })
 

@@ -43,7 +43,6 @@
                 <div class="col-span-1">
                   <p class="text-sm text-gray-500">
                     App URL (e.g. ws://localhost:8080)
-                    Give your app an individual name. This is helpful to distinguish between prod and staging apps.
                   </p>
                 </div>
                 <div class="col-span-2">
@@ -191,8 +190,6 @@
             setup. Test your credentials and server to confirm everything is operating as intended, ensuring your AI
             server is optimally prepared for both development and deployment.</p><br/>
           <p class="text-gray-700">Just enter your App ID (or URL, if on-premise) and secret to get started. ✨</p><br/>
-
-          <p class="text-gray-700">Click <a href="https://www.tiptap.dev/docs/cloud" class="underline" target="_blank">here</a> to open the documentation.</p>
         </div>
 
         <div v-if="aiEnabled" class="grid gap-4 mt-4">
@@ -358,7 +355,7 @@ const aiJwt = ref('')
 watch(secret, async () => {
   // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
   jwt.value = await new jose.SignJWT({
-    allowedDocumentNames: ['test1', 'test2'],
+    allowedDocumentNames: ['testdocument'],
   }).setProtectedHeader({alg: 'HS256'})
     .setIssuedAt()
     .sign(new TextEncoder().encode(secret.value))
