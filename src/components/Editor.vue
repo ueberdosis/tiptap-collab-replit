@@ -18,6 +18,7 @@ const props = defineProps<{
   aiUrl: string
   aiId: string
   aiJwt: string
+  user: string
 }>()
 
 const provider = shallowRef<TiptapCollabProvider>()
@@ -38,6 +39,7 @@ const recreate = () => {
     } : {
       baseUrl: props.appUrl,
     },
+    user: props.user,
     name: props.aiEnabled ? 'ai-test1' : 'testdocument',
     token: props.jwt,
     preserveConnection: false,
