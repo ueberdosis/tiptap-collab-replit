@@ -166,17 +166,19 @@
             :aiUrl="aiUrl"
             :aiId="aiId"
             :aiJwt="aiJwt"
+            user="user_1"
           ></Editor>
 
           <Editor
             :mode="mode"
             :appUrl="appUrl"
             :appId="appId"
-            :jwt="jwt"
+            :jwt="jwt2"
             :aiEnabled="false"
             :aiUrl="aiUrl"
             :aiId="aiId"
             :aiJwt="aiJwt"
+            user="user_2"
           ></Editor>
         </div>
 
@@ -346,6 +348,7 @@ const appUrl = ref('')
 const appId = ref('')
 const secret = ref('')
 const jwt = ref('')
+const jwt2 = ref('')
 
 const aiUrl = ref('')
 const aiId = ref('')
@@ -356,6 +359,14 @@ watch(secret, async () => {
   // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
   jwt.value = await new jose.SignJWT({
     allowedDocumentNames: ['testdocument'],
+    sub: 'user_1',
+  }).setProtectedHeader({alg: 'HS256'})
+    .setIssuedAt()
+    .sign(new TextEncoder().encode(secret.value))
+
+  jwt2.value = await new jose.SignJWT({
+    allowedDocumentNames: ['testdocument'],
+    sub: 'user_2',
   }).setProtectedHeader({alg: 'HS256'})
     .setIssuedAt()
     .sign(new TextEncoder().encode(secret.value))
@@ -418,6 +429,8 @@ watch([appUrl, appId, mode, secret, aiEnabled, aiUrl, aiId, aiSecret], () => {
 </script>
 
 <style lang="postcss">
+@import "tailwindcss";
+
 .ProseMirror {
   padding: 1rem;
 }

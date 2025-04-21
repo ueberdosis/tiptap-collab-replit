@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 rounded p-4 mb-8 flex flex-wrap content-center rounded-xl">
+  <div class="bg-gray-100 rounded-sm p-4 mb-8 flex flex-wrap content-center rounded-xl">
     <div class="flex-1 flex flex-col justify-center">
       {{ status }} to {{ provider.configuration.name }} at {{ socket.configuration.url }}
     </div>
@@ -15,14 +15,14 @@
       <button
         v-if="status === 'disconnected'"
         @click="socket.connect()"
-        class="ml-3 border-2 border-black bg-black text-white px-4 py-2 rounded"
+        class="ml-3 border-2 border-black bg-black text-white px-4 py-2 rounded-sm"
       >
         connect
       </button>
       <button
         v-else
         @click="socket.disconnect()"
-        class="ml-3 border-2 border-black bg-white px-4 py-2 rounded"
+        class="ml-3 border-2 border-black bg-white px-4 py-2 rounded-sm"
       >
         disconnect
       </button>
