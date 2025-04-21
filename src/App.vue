@@ -9,8 +9,8 @@ import svg from './assets/logo.svg'
 
     <img alt="Tiptap Logo" :src="svg" class="w-32"/>
 
-    <div class="flex flex-grow lg:mt-32 mt-4">
-      <main class="flex-grow ">
+    <div class="flex grow lg:mt-32 mt-4">
+      <main class="grow ">
         <Collab/>
       </main>
     </div>

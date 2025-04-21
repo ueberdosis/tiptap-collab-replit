@@ -418,6 +418,8 @@ watch([appUrl, appId, mode, secret, aiEnabled, aiUrl, aiId, aiSecret], () => {
 </script>
 
 <style lang="postcss">
+@import "tailwindcss";
+
 .ProseMirror {
   padding: 1rem;
 }
