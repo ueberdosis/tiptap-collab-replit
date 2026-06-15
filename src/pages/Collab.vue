@@ -123,7 +123,7 @@
                     (cloud): the secret is shown on collab.tiptap.dev.
                     </span>
 
-                    <span>Our JWT is generated client-side and NEVER leaves your device</span>
+                    <span>Our JWT is generated client-side and NEVER leaves your device. For your security, the secret is not stored and must be re-entered after a reload.</span>
                   </p>
                 </div>
                 <div class="col-span-2">
@@ -135,14 +135,22 @@
                             <div>
                               <input
                                 id="secret"
-                                type="text"
+                                :type="showSecret ? 'text' : 'password'"
                                 class="w-full"
                                 placeholder="App Secret"
+                                autocomplete="off"
                                 v-model="secret"
                               />
                             </div>
 
                           </div>
+                          <button
+                            type="button"
+                            class="underline text-sm whitespace-nowrap"
+                            @click="showSecret = !showSecret"
+                          >
+                            {{ showSecret ? 'Hide' : 'Show' }}
+                          </button>
                         </div>
                       </form>
                     </div>
@@ -283,7 +291,7 @@
                     (cloud): the secret is shown on collab.tiptap.dev.
                     </span>
 
-                    <span>Our JWT is generated client-side and NEVER leaves your device</span>
+                    <span>Our JWT is generated client-side and NEVER leaves your device. For your security, the secret is not stored and must be re-entered after a reload.</span>
                   </p>
                 </div>
                 <div class="col-span-2">
@@ -295,14 +303,22 @@
                             <div>
                               <input
                                 id="secret"
-                                type="text"
+                                :type="showAiSecret ? 'text' : 'password'"
                                 class="w-full"
                                 placeholder="AI Secret"
+                                autocomplete="off"
                                 v-model="aiSecret"
                               />
                             </div>
 
                           </div>
+                          <button
+                            type="button"
+                            class="underline text-sm whitespace-nowrap"
+                            @click="showAiSecret = !showAiSecret"
+                          >
+                            {{ showAiSecret ? 'Hide' : 'Show' }}
+                          </button>
                         </div>
                       </form>
                     </div>
@@ -355,6 +371,9 @@ const aiId = ref('')
 const aiSecret = ref('')
 const aiJwt = ref('')
 
+const showSecret = ref(false)
+const showAiSecret = ref(false)
+
 watch(secret, async () => {
   // do NOT generate the JWT like this in production, this is just for demoing purposes. The secret MUST be stored on and never leave the server.
   jwt.value = await new jose.SignJWT({
@@ -380,15 +399,18 @@ watch(aiSecret, async () => {
 })
 
 onMounted(() => {
+  // Secrets are intentionally NOT loaded from storage. Remove any that may have
+  // been persisted by older versions so they can't leak (e.g. while screen sharing).
+  window.localStorage.removeItem('secret')
+  window.localStorage.removeItem('aiSecret')
+
   appUrl.value = window.localStorage.getItem('appUrl') ?? ''
   appId.value = window.localStorage.getItem('appId') ?? ''
   mode.value = (window.localStorage.getItem('mode') as typeof mode.value) ?? 'cloud'
-  secret.value = window.localStorage.getItem('secret') ?? ''
 
   aiEnabled.value = window.localStorage.getItem('aiEnabled') === '1'
   aiUrl.value = window.localStorage.getItem('aiUrl') ?? ''
   aiId.value = window.localStorage.getItem('aiId') ?? ''
-  aiSecret.value = window.localStorage.getItem('aiSecret') ?? ''
 
   const urlParams = new URLSearchParams(window.location.search);
   const modeParam = urlParams.get('mode')
@@ -414,16 +436,15 @@ const switchMode = () => {
   }
 }
 
-watch([appUrl, appId, mode, secret, aiEnabled, aiUrl, aiId, aiSecret], () => {
+// Secrets (secret, aiSecret) are deliberately excluded here — they are never persisted.
+watch([appUrl, appId, mode, aiEnabled, aiUrl, aiId], () => {
   window.localStorage.setItem('appUrl', appUrl.value)
   window.localStorage.setItem('appId', appId.value)
   window.localStorage.setItem('mode', mode.value)
-  window.localStorage.setItem('secret', secret.value)
 
-  window.localStorage.setItem('aiEnabled', aiEnabled ? '1' : '0')
+  window.localStorage.setItem('aiEnabled', aiEnabled.value ? '1' : '0')
   window.localStorage.setItem('aiUrl', aiUrl.value)
   window.localStorage.setItem('aiId', aiId.value)
-  window.localStorage.setItem('aiSecret', aiSecret.value)
 })
 
 </script>
@@ -448,7 +469,8 @@ label {
   @apply text-sm font-medium;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   @apply font-mono;
   @apply border-black border-2;
   @apply rounded-xl;
