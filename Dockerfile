@@ -15,6 +15,6 @@ RUN --mount=type=secret,id=npmrc,target=/var/www/.npmrc,required=true \
     npm install \
     && npm run build
 
-FROM nginx:1.25
+FROM nginx:1.31.3
 
 COPY --from=builder /var/www/dist /usr/share/nginx/html
